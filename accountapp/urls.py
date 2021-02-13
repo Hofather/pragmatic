@@ -12,5 +12,5 @@ urlpatterns = [
 
     path('create/', AccountCreateView.as_view(), name='create'), #class 형의 view인 경우에는 as_view()메소드 사용.
     path('detail/<int:pk>', AccountDetailView.as_view(), name='detail'),
-    path('update/<int:pk>', AccountUpdateView.as_view(), name='detail'),
+    path('update/<int:pk>', AccountUpdateView.as_view(), name='update'),
 ]
