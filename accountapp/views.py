@@ -1,16 +1,21 @@
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 
 # Create your views here.
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy , reverse
+from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
 
+from accountapp.decorators import account_ownership_required
 from accountapp.forms import AccountUpdateForm
 from accountapp.models import HelloWorld
 
+has_ownership=[account_ownership_required,login_required]
 
+@login_required  #login을 했는지 안했는지. redirect는 어디로 가는지 처리해준다.
 def hello_world(request):
     if request.method == "POST" :
         temp = request.POST.get('hello_world_input')
@@ -38,7 +43,8 @@ class AccountDetailView(DetailView):
     context_object_name = 'target_user'
     template_name = 'accountapp/detail.html'
 
-
+@method_decorator(has_ownership,'get') #일반 function에 적용되던 deco를 method에 적용가능하게 하는것.
+@method_decorator(has_ownership,'post')
 class AccountUpdateView(UpdateView):
     model = User
     form_class = AccountUpdateForm
@@ -46,6 +52,8 @@ class AccountUpdateView(UpdateView):
     success_url = reverse_lazy('accountapp:hello_world')
     template_name = 'accountapp/update.html'
 
+@method_decorator(has_ownership,'get') #일반 function에 적용되던 deco를 method에 적용가능하게 하는것.
+@method_decorator(has_ownership,'post')
 class AccountDeleteView(DeleteView):
     model = User
     context_object_name = 'target_user'
