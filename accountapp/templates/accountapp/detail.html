@@ -4,27 +4,37 @@
 <div>
     <div style="text-align:center; max-length:500px;margin:4rem auto;">
 
-        <img src="{{ target_user.profile.image.url }}" alt=""
-             style="height: 12rem; width: 10rem; border-radius:10rem; margin-bottom:2rem;">
-        
+
         {% if target_user.profile %}
+         <img src="{{ target_user.profile.image.url }}" alt=""
+         style="height: 12rem; width: 10rem; border-radius:10rem; margin-bottom:2rem;">
         <h2>
             {{ target_user.profile.nickname }}
-            <a href="{% url 'profileapp:update' pk=target_user.profile.pk %}">
-                Edit
-            </a>
+                {% if target_user == user %}
+                <a href="{% url 'profileapp:update' pk=target_user.profile.pk %}">
+                    edit
+                </a>
+                {% endif %}
         </h2>
-        {% else %}
-        <a href="{% url 'profileapp:create' %}">
-            <p>
-                Create Profile
-            </p>
-        </a>
-        {% endif %}
-
         <h5 style="margin-bottom:3rem;">
             {{ target_user.profile.message }}
         </h5>
+
+        {% else %}
+            {% if target_user == user %}
+                <a href="{% url 'profileapp:create' %}">
+                    <p>
+                        Create Profile
+                    </p>
+                </a>
+            {% else %}
+            <h2>
+                프로파일을 아직 만들지 않았습니다.
+            </h2>
+            {% endif %}
+        {% endif %}
+
+
 
         {% if target_user == user %}
         <a href="{% url 'accountapp:update' pk=user.pk %}">
